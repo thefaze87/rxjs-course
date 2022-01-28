@@ -27,15 +27,11 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
         // Dollar in the variable tells its an observable
-        const interval$ = interval(1000);
+        const interval$ = timer(3000, 1000);
 
         // Only become a stream if you subscribe to it (subscribe() method)
         interval$.subscribe(value => {
             console.log('stream 1 ' + value);
-        });
-
-        interval$.subscribe(value => {
-            console.log('stream 2 ' + value);
         });
     }
 }
