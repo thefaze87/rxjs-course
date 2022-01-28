@@ -30,14 +30,20 @@ export class AboutComponent implements OnInit {
         const interval$ = timer(3000, 1000);
 
         // Only become a stream if you subscribe to it (subscribe() method)
-        interval$.subscribe(value => {
-            console.log('stream 1 ' + value);
+        const sub = interval$.subscribe(value => {
+            console.log('stream 1 => ' + value);
         });
+
+        setTimeout(() => sub.unsubscribe(), 5000);
 
         // Source and event to subscribe to (returns stream not instance)
         const click$ = fromEvent(document, 'click');
 
-        click$.subscribe(event => console.log(event));
+        click$.subscribe(
+            event => console.log(event),
+            err => console.error(err),
+            () => console.log('completed')
+        );
     }
 }
 
