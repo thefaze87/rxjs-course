@@ -33,6 +33,11 @@ export class AboutComponent implements OnInit {
         interval$.subscribe(value => {
             console.log('stream 1 ' + value);
         });
+
+        // Source and event to subscribe to (returns stream not instance)
+        const click$ = fromEvent(document, 'click');
+
+        click$.subscribe(event => console.log(event));
     }
 }
 
