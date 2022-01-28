@@ -1,4 +1,5 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import { response } from 'express';
 import {
     concat,
     fromEvent,
@@ -26,22 +27,27 @@ import {createHttpObservable} from '../common/util';
 export class AboutComponent implements OnInit {
 
     ngOnInit() {
-        // Dollar in the variable tells its an observable
-        const interval$ = timer(3000, 1000);
-
-        // Only become a stream if you subscribe to it (subscribe() method)
-        const sub = interval$.subscribe(value => {
-            console.log('stream 1 => ' + value);
+        // Creating our own HTTP Observable
+        const http$ = new Observable(observer => {
+            // Fetch from api
+            fetch('/api/courses/')
+                .then(response => {
+                    return response.json();
+                })
+                .then(body => {
+                    // Complete our observable
+                    observer.next(body);
+                    observer.complete();
+                })
+                .catch(error => {
+                    // Catch if error
+                    observer.error(error);
+                });
         });
 
-        setTimeout(() => sub.unsubscribe(), 5000);
-
-        // Source and event to subscribe to (returns stream not instance)
-        const click$ = fromEvent(document, 'click');
-
-        click$.subscribe(
-            event => console.log(event),
-            err => console.error(err),
+        http$.subscribe(
+            courses => console.log(courses),
+            noop,
             () => console.log('completed')
         );
     }
